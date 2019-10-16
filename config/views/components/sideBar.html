@@ -1,0 +1,82 @@
+<template id='sidebar'>
+    <div class="sidebar">
+        <tt><i class="fas fa-tools"></i> {{ title }}</tt>
+        <hr>
+
+        <div class="config">
+            <ul class="list-group">
+                <li class="list-group-item active"><img src="(% url_for('static', filename='images/flats/dominican.png') %)" alt=""> Servidor - Rep.Dom (conected)</li>
+                <!-- <li class="list-group-item mt-2">Dapibus ac facilisis in</li>
+                <li class="list-group-item">Morbi leo risus</li>
+                <li class="list-group-item">Porta ac consectetur ac</li>
+                <li class="list-group-item">Vestibulum at eros</li> -->
+              </ul>
+        </div>
+        
+        <div class="close" @click="close_config">
+            <i class="fas fa-flag"></i>
+        </div>
+    </div>
+</template>
+
+<script>
+var app = new Vue({
+    el: '#sidebar',
+    mounted: function(){
+    
+    },
+    data: {
+        title: 'Config - servers casino'
+    },
+    methods:{
+        close_config(e){
+            $('.sidebar').hide('fast')
+        }
+    }
+})
+</script>
+
+<link href="https://fonts.googleapis.com/css?family=Indie+Flower|Ubuntu&display=swap" rel="stylesheet">
+
+<style scoped>
+.sidebar{
+    position:absolute;
+    left:0;
+    width:350px;
+    height: 100%;
+    /* background: rgba(255,255,255,0.8) */
+    background: #fff;
+    box-shadow: 0 0 20px rgba(0,0,0,0.4);
+}
+.sidebar tt{
+    color: #000;
+    font-size: 18px;
+    font-family: 'Indie Flower', cursive, 'Ubuntu', sans-serif;
+    font-weight: bold;
+    position:relative;
+    left: 10px;
+    top: 10px;
+
+}
+.config ul li img{
+    width: 25px
+}
+.config .list-group{
+    cursor: pointer;
+}
+.config .list-group li{
+    background:red !important;
+}
+hr{
+    border: 0;
+    border-bottom: groove 1px #fff;
+    opacity: 0.8
+}
+.close{
+    position:absolute;
+    right: 10px;
+    top: 15px;
+    cursor:pointer;
+    font-size: 16px;
+}
+</style>

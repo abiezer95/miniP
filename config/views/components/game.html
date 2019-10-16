@@ -1,0 +1,50 @@
+
+<div class="game">
+    <div class="river">
+
+    </div>
+    <center>
+        <canvas id='canvas'></canvas>
+    </center>
+</div>
+
+
+<script>
+sprites = images(
+    ['assets/images/desk2.png']
+);
+
+var game = document.getElementById('canvas');
+ctx = game.getContext('2d');
+
+game.width = window.innerWidth;
+game.height = window.innerHeight;
+
+setTimeout(() => {
+    ctx.drawImage(sprites[0], 120, 0, game.width/1.2, game.height)
+}, 100);
+
+</script>
+
+<style scoped>
+#canvas{
+    /* display:none; */
+    width: 900px;
+    height: 600px;
+    /* width: 100%;
+    height: 100%; */
+    /* border: groove 1px; */
+    border-radius: 5px;
+    background: transparent !important;
+    position: relative;
+    top:80px;
+    left: 100px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+.river{
+    position: relative;
+    background:#fff;
+    width: 100%;
+    height: 50px;
+}
+</style>

@@ -1,0 +1,23 @@
+proyecto: 
+    ☐ login
+    ☐ sala de servidores
+    ✔ diseño principal @done(19-10-14 13:52)
+
+Logica basica del juego:
+    ☐ crear sistema de fichas
+    ☐ Puntos por cartas
+    ☐ valor de cada carta
+    ☐ ordenar cartas de forma aleatoria
+    ☐ repartir cartas
+
+Logica de juego:
+    ☐ igual que el robado
+    ☐ al final cuando ya no hay mas cartas el ultimo que se 
+    ☐ llevo cartas se queda con las restantes
+    
+    ☐ se cuentan cuantas tiene cada uno sabiendo cuanto valen cada una
+    ☐ si uno tiene ej. 27 cartas y el otro 25 ya tiene 2 puntos ganados el de 27
+
+
+
+    
