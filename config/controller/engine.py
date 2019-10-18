@@ -41,28 +41,8 @@ class RulesGame():
             self.turn.extend((flop[cards[0]-1], player[cards[1]-1]))
             
         self.turn.insert(0, self.new_flop+player[cards[1]-1][0])
+        # print(self.turn)
         return self.turn
-        
-
-rule = RulesGame({'n_player': 4})
-turno = rule.shifts()
-
-rule.rule_sum({'flop': [[2, 'Corazones'], [8, 'picas'], [10, 'Diamantes'], [1, 'Tréboles']], 'Player-1': [[1, 'joker'], [13, 'Diamantes'], [10, 'Picas'], [5, 'Tréboles']], 'Player-2': [[7, 'Picas'], [12, 'Picas'], [8, 'Diamantes'], [11, 'Picas']], 'Player-3': [[13, 'Corazones'], [3, 'Tréboles'], [1, 'Diamantes'], [5, 'Tréboles']], 'Player-4': [[10, 'Corazones'], [9, 'Picas'], [12, 'Tréboles'], [11, 'Corazones']]}, 
-    [2, 4]
-)
-
-
-# print(rule.shifts())
-
-        
-# server = Server()
-# server.online_player()
-# print(server.id_player)
-# baraja = cartas.Cartas()
-# baraja.tipo = ['Picas','Corazones','Diamantes','Tréboles']
-# baraja.cartas = ['1','2','3','4','5','6','7','8','9','10','11','12','13']
-# baraja.mazo()
-# baraja.barajar()
-# baraja.repartir(3)
-
-# print(baraja.player)
+    
+    def get_card(self, data): 
+        return
