@@ -43,6 +43,3 @@ class RulesGame():
         self.turn.insert(0, self.new_flop+player[cards[1]-1][0])
         # print(self.turn)
         return self.turn
-    
-    def get_card(self, data): 
-        return
