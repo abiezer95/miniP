@@ -2,19 +2,20 @@
 
 class Server:
     all_players, id_player = 0, 0
-    limit_players = 4
+    limit_players = 0
 
     def _init_(self, gamblers):
         self.cards = []
         self.gamblers = gamblers
 
     def online_player(self):
-        self.all_players = self.all_players+1
+        self.all_players =  self.all_players + 1
         self.id_player = 'Player-'+str(self.all_players) #creando id de jugador
         # self.players[self.id_player] = []
     
     def limit_player(self):
-        return True if self.limit_players < 4 else False
+        return self.limit_players
+        # return False if self.limit_players <= 1 or self.limit_player > 4 else True
 
 class RulesGame():
     inning = 0 #turnos
