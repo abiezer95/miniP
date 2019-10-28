@@ -9,11 +9,18 @@ rule = engine.RulesGame({'n_player': 4})
 class Cartas:
     tipo = []
     cartas, cards, all_data = [], [], {'flop': [], 'total': []}
-    
-    def mazo(self): #creamos el mazo normal de cartas 
+    icon = ''
+    checks = []
+
+    def mazo(self): #creamos el mazo normal de cartas
+        i = 0
         for card in self.cartas:
             for x in self.tipo:
-                self.cards.append([card, x])
+                self.cards.append([card, x, self.icon[i]])
+                i += 1
+                if i == 4:
+                    i = 0
+                
         print('Mazo de cartas listo...')
 
     def barajar(self):
@@ -69,17 +76,55 @@ class Cartas:
                 else:
                     return False #no puedes llevarte el grupo de cartas
                 i += 1   
-            
+    
+    # def sum_play(self, action, cards):
+    #     suggest = []
+    #     if action == 'sum':
+    #         river = rule.rule_sum(self.all_data, cards)
+    #         if isinstance(cards[0], list): #si se suman mas de una carta del flop y una tuya
+    #             suggest.insert(cards[0][0]-1, river)
+    #         else: # si se suma solo una carta tuya y del flop
+    #             suggest.insert(cards[0]-1, river)
+    #     return suggest
+    def check(self, total, card, player_get):
+        text = ''
+        player = self.all_data['Player-'+str(1)]
+        for cards in player:
+            if total == cards[0]:
+                text = 'Suma: /'+str(player_get)+'/ + /'+text+str(card[0])+card[2]+'/ = '+str(cards[0])+cards[2]
+                # text = text+str(player[0])
+        return text
+        # return text
+
+    def check_cards(self, i):
+        player = self.all_data['Player-'+str(1)][i][0]
+        for card in self.all_data['flop']:
+            total = card[0] + player
+            result = self.check(total, card, player)
+            if card[0] == self.all_data['Player-'+str(1)][i][0]: 
+                print('LLevate el: '+str(self.all_data['Player-'+str(1)][i][0]))
+                #este if podia hacerse en la funcion check pero para ejemplo de recursividad lo hice aqui
+            if len(result) > 0:
+                print(result)
+        i += 1
+        if i >= len(self.all_data['Player-'+str(1)])-1:
+            return 0
+        else:
+            return self.check_cards(i) #ejemplo de recursividad  
         
+
 # baraja = Cartas()
 # baraja.tipo = ['Picas','Corazones','Diamantes','Tréboles']
 # baraja.cartas = [1,2,3,4,5,6,7,8,9,10,11,12,13]
+# baraja.icon = ['♤', '♥', '♦', '♣']
 # baraja.mazo()
 # baraja.barajar()
 
 # baraja.repartir(4)
 
 # rule.shifts() #turnos
+
+# baraja.suggest_play('sum', [[1, 2], 1])
 
 # baraja.all_data = {'flop': [[12, 'Diamantes'], [5, 'Corazones'], [2, 'Diamantes'], [12, 'Corazones']], 'Player-1': [[12, 'Corazones'], [5, 'Tréboles'], [4, 'Tréboles'], [8, 'Picas']], 'Player-2': [[9, 'Picas'], [10, 'Tréboles'], [2, 'Corazones'], [3, 'Picas']], 'Player-3': [[11, 'Tréboles'], [13, 'Diamantes'], [10, 'Diamantes'], [7, 'Corazones']], 'Player-4': [[3, 'Tréboles'], [6, 'Picas'], [9, 'Diamantes'], [11, 'Diamantes']], 'total': [[],[],[],[]]}
 
