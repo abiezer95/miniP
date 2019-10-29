@@ -1,5 +1,3 @@
-# import cartas
-
 class Server:
     all_players, id_player = 0, 0
     limit_players = 0
@@ -18,7 +16,7 @@ class Server:
         # return False if self.limit_players <= 1 or self.limit_player > 4 else True
 
 class RulesGame():
-    inning = 0 #turnos
+    inning = 1 #turnos
     new_flop = 0
     turn = []
 
@@ -30,17 +28,26 @@ class RulesGame():
         return self.inning
     
     def rule_sum(self, data, cards): #working
+        self.turn = []
         player = data['Player-'+str(self.inning)] #obteniendo turno
         flop = data['flop'] #obteniendo barajas en tablero
-        if isinstance(cards[0], list):
+        
+        if isinstance(cards[0], list): #si se suma mas de un flop y tus cartas
             for card in cards[0]:
-                self.new_flop = self.new_flop + flop[card-1][0] #agregado los cartas sumadas 
+                self.new_flop = self.new_flop + flop[card-1][0] #agregado los cartas sumadas
                 self.turn.append(flop[card-1])
             self.turn.append(player[cards[1]-1]) 
-        else:
-            self.new_flop = flop[cards[0]-1][0]
+        else: 
+            self.new_flop = flop[cards[0]-1][0] #carta del flop
             self.turn.extend((flop[cards[0]-1], player[cards[1]-1]))
-            
+
+            if isinstance(flop[cards[0]-1][1], list): #quitando primer digito
+                self.turn = []
+                for card in flop[cards[0]-1]:
+                    if isinstance(card, list):
+                        self.turn.append(card)
+                self.turn.append(player[cards[1]-1])
+
         self.turn.insert(0, self.new_flop+player[cards[1]-1][0])
-        # print(self.turn)
+
         return self.turn

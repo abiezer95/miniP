@@ -13,6 +13,7 @@ definitions = {
     'inning': 'Es el turno del jugador $n',
     'player': 'Jugador $n estas son sus cartas: ',
     'choose': 'Que vas a elegir: ',
+    'playing': 'Que jugaras \n Sumar(1), Obtener(2): ',
     'suggestions': '\nEscribe ej. 1+2 para sumar donde 1 es la 1ra carta de las principales del frente (flop) y 2 para la 2da de tu mazo\nLlevate una carta escribiendo 1=2 siguiendo la misma estructura y 1,2+3 para sumar \nla 1ra y 2da carta del flop con la 3ra de tu mazo',
 }
 
@@ -34,7 +35,7 @@ def get_input(text):
     return var
 
 def cls():
-    os.system ("clear")
+    # os.system ("clear")
     os.system ("cls") 
 
 def load_game():
@@ -55,28 +56,26 @@ def load_game():
 
 def flop(suggested): #jugabilidad y textos
     cls()
+    # print(game.all_data)
     river = ""
     player_card = ""
     inning = 1 if cartas.rule.inning == 0 else cartas.rule.inning
     
-    game.all_data = {'flop': [[7, [1, 'Corazones', '♥'], [6, 'Diamantes', '♦']], [12, 'Corazones', '♥'], [2, 'Tréboles', '♣'], [6, 'Tréboles', '♣']], 'total': [[], [], [], []], 'Player-1': [[6, 'Diamantes', '♦'], [8, 'Diamantes', '♦'], [11, 'Corazones', '♥'], [1, 'Picas', '♤']], 'Player-2': [[5, 'Tréboles', '♣'], [13, 'Picas', '♤'], [12, 'Picas', '♤'], [4, 'Picas', '♤']], 'Player-3': [[10, 'Picas', '♤'], [8, 'Picas', '♤'], [13, 'Diamantes', '♦'], [9, 'Corazones', '♥']], 'Player-4': [[12, 'Diamantes', '♦'], [10, 'Corazones', '♥'], [9, 'Picas', '♤'], [7, 'Tréboles', '♣']]}
+    # game.all_data = {'flop': [[7, [1, 'Corazones', '♥'], [6, 'Diamantes', '♦']], [12, 'Corazones', '♥'], [2, 'Tréboles', '♣'], [6, 'Tréboles', '♣']], 'total': [[], [], [], []], 'Player-1': [[6, 'Diamantes', '♦'], [8, 'Diamantes', '♦'], [11, 'Corazones', '♥'], [1, 'Picas', '♤']], 'Player-2': [[5, 'Tréboles', '♣'], [13, 'Picas', '♤'], [12, 'Picas', '♤'], [4, 'Picas', '♤']], 'Player-3': [[10, 'Picas', '♤'], [8, 'Picas', '♤'], [13, 'Diamantes', '♦'], [9, 'Corazones', '♥']], 'Player-4': [[12, 'Diamantes', '♦'], [10, 'Corazones', '♥'], [9, 'Picas', '♤'], [7, 'Tréboles', '♣']]}
     
     icons = ''
     for cards in game.all_data['flop']:
-        if isinstance(cards[1], list):
-            icons = icons + str([i[2] if isinstance(i, list) else ':' for i in cards])
-            print(icons)
-            # print(icons)
-            river = river +"/"+ str(cards[0])+"-"+icons+"/ "
-        # else:
-        #     river = river +"/"+ str(cards[0])+"-"+cards[2].upper()+"/ " 
-    # print(river)
+        if isinstance(cards[1], list) or isinstance(cards[2], list):
+            icons = [i[2] if isinstance(i, list) else '' for i in cards] #si es array en flop
+            river = river +"/"+ str(cards[0])+"-"+str(''.join(icons))+"/ "
+        else:
+            river = river +"/"+ str(cards[0])+"-"+str(cards[2])+"/ " 
     
     for cards in game.all_data['Player-'+str(inning)]:
         player_card = player_card +"/"+ str(cards[0])+"-"+cards[2].upper()+"/   "
     
-    #titulo y turno del jugador
-    piece_text(5, '⚄ ', definitions['inning'].replace('$n', 'Player-'+str(inning)))
+    
+    piece_text(5, '⚄ ', definitions['inning'].replace('$n', 'Player-'+str(inning))) #titulo y turno del jugador
     
     print('\n')
     
@@ -92,8 +91,7 @@ def flop(suggested): #jugabilidad y textos
     if suggested == False:
         flop(True) #sobreescribiendo el flop
         player_play() #jugando
-        
-    # print(game.sum_play('sum', [[1, 2], 1]))
+
     
 def suggestion():
     print('Puedes jugar de esta forma: ')
@@ -105,17 +103,24 @@ def suggestion():
         
 
 def player_play():
-    cartas.rule.shifts() #nuevo turno
-    play = get_input('Que jugaras \n Sumar(1), Obtener(2): ')
+    play = get_input(definitions['playing'])
     if play == '1':
         flop(True)
         get = get_input('Sumar: ')
         get = get.replace(' ', '').split('-')
-        get = [int(i) for i in get]
-        print(get)
-        game.new_flop('sum', get, cartas.rule.inning)
-    
-    print(game.all_data)
+        game.new_flop('sum', [int(i) for i in get], cartas.rule.inning)
+    elif not play == 2:
+        flop(True), player_play()
+    else:
+        get = get_input('Objeter: ')
+        get = get.replace(' ', '').split('-')
+        game.new_flop('get_card', [int(i) for i in get], cartas.rule.inning)
+        
+    cartas.rule.shifts() #nuevo turno
+    print('Listo, ahora es turno del jugador '+str(cartas.rule.inning))
+    setTimeOut([[3, 'cls(),flop(False)']])
+
+    # print(game.all_data)
     # flop(True)
     
 

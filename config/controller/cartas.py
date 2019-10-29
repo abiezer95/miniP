@@ -49,7 +49,7 @@ class Cartas:
     #agregando nuevo flop, updating #polimorfismo de dos funciones :)
     def new_flop(self, action, cards, shifts): #nueva baraja del flop
         flop = self.all_data['flop']
-        player = self.all_data['Player-'+str(1)]
+        player = self.all_data['Player-'+str(shifts)]
         if action == 'sum':
             i = 1
             river = rule.rule_sum(self.all_data, cards)
@@ -61,6 +61,13 @@ class Cartas:
             else: # si sse suma una carta tuya y del flop
                 flop.pop(cards[0]-1)
                 flop.insert(cards[0]-1, river)
+                # n = 0
+                # print(river)
+                # for i in flop[cards[0]-1]:
+                #     if n == 1 and not isinstance(i, list):
+                #         flop[cards[0]-1].pop(n)
+                #     n += 1
+                
 
         elif action == 'get_card':
             i = 0
@@ -76,16 +83,7 @@ class Cartas:
                 else:
                     return False #no puedes llevarte el grupo de cartas
                 i += 1   
-    
-    # def sum_play(self, action, cards):
-    #     suggest = []
-    #     if action == 'sum':
-    #         river = rule.rule_sum(self.all_data, cards)
-    #         if isinstance(cards[0], list): #si se suman mas de una carta del flop y una tuya
-    #             suggest.insert(cards[0][0]-1, river)
-    #         else: # si se suma solo una carta tuya y del flop
-    #             suggest.insert(cards[0]-1, river)
-    #     return suggest
+                
     def check(self, total, card, player_get):
         text = ''
         player = self.all_data['Player-'+str(1)]
@@ -126,9 +124,13 @@ class Cartas:
 
 # baraja.suggest_play('sum', [[1, 2], 1])
 
-# baraja.all_data = {'flop': [[12, 'Diamantes'], [5, 'Corazones'], [2, 'Diamantes'], [12, 'Corazones']], 'Player-1': [[12, 'Corazones'], [5, 'Tréboles'], [4, 'Tréboles'], [8, 'Picas']], 'Player-2': [[9, 'Picas'], [10, 'Tréboles'], [2, 'Corazones'], [3, 'Picas']], 'Player-3': [[11, 'Tréboles'], [13, 'Diamantes'], [10, 'Diamantes'], [7, 'Corazones']], 'Player-4': [[3, 'Tréboles'], [6, 'Picas'], [9, 'Diamantes'], [11, 'Diamantes']], 'total': [[],[],[],[]]}
+# baraja.all_data = {'flop': [[4, 'Diamantes', '♦'], [1, 'Picas', '♤'], [9, 'Diamantes', '♦'], [11, 'Corazones', '♥']], 'total': [[], [], [], []], 'Player-1': [[13, 'Picas', '♤'], [13, 'Corazones', '♥'], [6, 'Picas', '♤'], [6, 'Tréboles', '♣']], 'Player-2': [[8, 'Picas', '♤'], [3, 'Diamantes', '♦'], [3, 'Tréboles', '♣'], [9, 'Corazones', '♥']], 'Player-3': [[12, 'Picas', '♤'], [11, 'Picas', '♤'], [10, 'Corazones', '♥'], [12, 'Corazones', '♥']], 'Player-4': [[1, 'Corazones', '♥'], [12, 'Diamantes', '♦'], [13, 'Tréboles', '♣'], [1, 'Diamantes', '♦']]}
 
-# baraja.new_flop('sum', [[2, 3], 2], 0)
+# baraja.new_flop('sum', [2, 3], 1)
+# rule.shifts()
+# baraja.new_flop('sum', [2, 1], 2)
+# baraja.new_flop('sum', [[2, 3], 2], 2)
+# baraja.new_flop('sum', [[2, 3], 2], 2)
 # baraja.new_flop('get_card', [[1, 2], 1], 0)
 
-# print(baraja.all_data['total'])
+# print(baraja.all_data)
