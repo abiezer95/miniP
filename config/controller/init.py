@@ -109,9 +109,10 @@ def player_play():
         get = get_input('Sumar: ')
         get = get.replace(' ', '').split('-')
         game.new_flop('sum', [int(i) for i in get], cartas.rule.inning)
-    elif not play == 2:
+    elif not play == '2':
         flop(True), player_play()
     else:
+        flop(True)
         get = get_input('Objeter: ')
         get = get.replace(' ', '').split('-')
         game.new_flop('get_card', [int(i) for i in get], cartas.rule.inning)

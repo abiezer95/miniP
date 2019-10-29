@@ -51,3 +51,31 @@ class RulesGame():
         self.turn.insert(0, self.new_flop+player[cards[1]-1][0])
 
         return self.turn
+    
+    def rule_get(self, data, cards, player):
+        river = []
+        flop = data['flop']
+        if isinstance(cards[0], list):
+            None
+                # for card in flop:
+                #     print(card)
+        else:        
+            if flop[cards[0]-1][0] ==  player[cards[1]-1][0]:
+                if isinstance(flop[cards[0]-1][1], list): #si ya habian sumadas
+                    flop[cards[0]-1].pop(0) #eliminamos primer digito inservible
+                    [river.append(i) for i in flop[cards[0]-1]]
+                    river.append(player[cards[1]-1])
+                else:
+                    river.extend((flop[cards[0]-1], player[cards[1]-1])) #agregamos
+                    
+                flop.pop(cards[0]-1), player.pop(cards[1]-1) #eliminamos cartas
+                [data['total'][self.inning-1].append(i) for i in river]
+
+        print(player)
+        # return river
+
+        
+             
+            
+        
+
