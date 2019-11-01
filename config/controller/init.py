@@ -13,7 +13,7 @@ definitions = {
     'inning': 'Es el turno del jugador $n',
     'player': 'Jugador $n estas son sus cartas: ',
     'choose': 'Que vas a elegir: ',
-    'playing': 'Que jugaras \n Sumar(1), Obtener(2): ',
+    'playing': 'Que jugaras \nSumar(1), Obtener(2), Dejar Carta (3): ',
     'suggestions': '\nEscribe ej. 1+2 para sumar donde 1 es la 1ra carta de las principales del frente (flop) y 2 para la 2da de tu mazo\nLlevate una carta escribiendo 1=2 siguiendo la misma estructura y 1,2+3 para sumar \nla 1ra y 2da carta del flop con la 3ra de tu mazo',
 }
 
@@ -39,7 +39,7 @@ def cls():
     os.system ("cls") 
 
 def load_game():
-    setTimeOut([[0, 'game.mazo()'], [0, 'game.barajar()'], [0, 'game.repartir(4)']])
+    setTimeOut([[0, 'game.mazo()'], [0, 'game.barajar()'], [0, 'game.repartir(4, False)']])
     flop(0)
     
     # piece_text(10, '/', definitions['welcome'].upper())
@@ -102,27 +102,64 @@ def suggestion():
     flop(True)
         
 
-def player_play():
+def player_play(): #cuando el jugador va a jugar
     play = get_input(definitions['playing'])
+    action = False #accion del new_flop
     if play == '1':
         flop(True)
         get = get_input('Sumar: ')
-        get = get.replace(' ', '').split('-')
-        game.new_flop('sum', [int(i) for i in get], cartas.rule.inning)
-    elif not play == '2':
-        flop(True), player_play()
-    else:
+        get = make_card_play(get)
+        if not get == ['']:
+            action = game.new_flop('sum', [i for i in get], cartas.rule.inning)
+        else: 
+            play = 0
+            
+    if play == '2':
         flop(True)
         get = get_input('Objeter: ')
-        get = get.replace(' ', '').split('-')
-        game.new_flop('get_card', [int(i) for i in get], cartas.rule.inning)
-        
+        get = make_card_play(get)
+        if not get == ['']:
+            action = game.new_flop('get_card', [i for i in get], cartas.rule.inning)
+        else:
+            play = 0
+    
+    if play == '3':
+        flop(True)
+        get = get_input('Dejar carta: ')
+        get = make_card_play(get)
+        if not get == ['']:
+            action = game.new_flop('leave_card', [i for i in get], cartas.rule.inning)
+        else:
+            play = 0
+    
+    if action == True: #error de cartas
+        print('Error cartas no coinciden o las sumaste más de 14')
+        time.sleep(2)
+        play = 0
+
+    back_page(play) #volver a lo mismo
+
     cartas.rule.shifts() #nuevo turno
+    # print(action)
     print('Listo, ahora es turno del jugador '+str(cartas.rule.inning))
     setTimeOut([[3, 'cls(),flop(False)']])
 
     # print(game.all_data)
     # flop(True)
     
+def back_page(play):
+    if play not in ['1', '2', '3']:
+        flop(True), player_play()
+
+def make_card_play(card):
+    river = card.replace('=', '-').split('-')
+    flop = []
+    if len(river) >= 3:
+        river.pop(-1)
+        flop.extend((river, card[-1]))
+        card = flop
+    else:
+        card = river
+    return card
 
 load_game()

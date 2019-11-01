@@ -31,25 +31,27 @@ class RulesGame():
         self.turn = []
         player = data['Player-'+str(self.inning)] #obteniendo turno
         flop = data['flop'] #obteniendo barajas en tablero
-        
+
         if isinstance(cards[0], list): #si se suma mas de un flop y tus cartas
             for card in cards[0]:
-                self.new_flop = self.new_flop + flop[card-1][0] #agregado los cartas sumadas
-                self.turn.append(flop[card-1])
-            self.turn.append(player[cards[1]-1]) 
+                self.new_flop = self.new_flop + flop[int(card)-1][0] #agregado los cartas sumadas
+                
+                self.turn.append(flop[int(card)-1])
+            self.turn.append(player[int(cards[1])-1])
         else: 
-            self.new_flop = flop[cards[0]-1][0] #carta del flop
-            self.turn.extend((flop[cards[0]-1], player[cards[1]-1]))
+            getted = flop[int(cards[0])-1]
+            self.new_flop = getted[0] #carta del flop
+            self.turn.extend((getted, player[int(cards[1])-1]))
 
-            if isinstance(flop[cards[0]-1][1], list): #quitando primer digito
+            if isinstance(getted[1], list): #quitando primer digito
                 self.turn = []
-                for card in flop[cards[0]-1]:
+                for card in getted:
                     if isinstance(card, list):
-                        self.turn.append(card)
-                self.turn.append(player[cards[1]-1])
+                        self.turn.append(int(card))
+                self.turn.append(player[int(cards[1])-1])
 
-        self.turn.insert(0, self.new_flop+player[cards[1]-1][0])
-
+        self.turn.insert(0, self.new_flop+player[int(cards[1])-1][0])
+        
         return self.turn
     
     def rule_get(self, data, cards, player):
@@ -59,20 +61,24 @@ class RulesGame():
             None
                 # for card in flop:
                 #     print(card)
-        else:        
-            if flop[cards[0]-1][0] ==  player[cards[1]-1][0]:
-                if isinstance(flop[cards[0]-1][1], list): #si ya habian sumadas
-                    flop[cards[0]-1].pop(0) #eliminamos primer digito inservible
-                    [river.append(i) for i in flop[cards[0]-1]]
-                    river.append(player[cards[1]-1])
+        else:
+            card1 = int(cards[0])
+            card2 = int(cards[1])
+            if flop[card1-1][0] ==  player[card2-1][0]:
+                if isinstance(flop[card1-1][1], list): #si ya habian sumadas
+                    flop[card1-1].pop(0) #eliminamos primer digito inservible
+                    [river.append(i) for i in flop[card1-1]]
+                    river.append(player[card2-1])
                 else:
-                    river.extend((flop[cards[0]-1], player[cards[1]-1])) #agregamos
+                    river.extend((flop[card1-1], player[card2-1])) #agregamos
                     
-                flop.pop(cards[0]-1), player.pop(cards[1]-1) #eliminamos cartas
+                flop.pop(card1-1), player.pop(card2-1) #eliminamos cartas
                 [data['total'][self.inning-1].append(i) for i in river]
+            else:
+                return False
 
-        print(player)
-        # return river
+        return river
+
 
         
              
