@@ -1,5 +1,6 @@
 import cartas
 import time, os
+import re as regex
 
 game = cartas.Cartas()
 game.tipo = ['Picas','Corazones','Diamantes','Tréboles']
@@ -14,7 +15,7 @@ definitions = {
     'player': 'Jugador $n estas son sus cartas: ',
     'choose': 'Que vas a elegir: ',
     'playing': 'Que jugaras \nSumar(1), Obtener(2), Dejar Carta (3): ',
-    'suggestions': '\nEscribe ej. 1+2 para sumar donde 1 es la 1ra carta de las principales del frente (flop) y 2 para la 2da de tu mazo\nLlevate una carta escribiendo 1=2 siguiendo la misma estructura y 1,2+3 para sumar \nla 1ra y 2da carta del flop con la 3ra de tu mazo',
+    'suggestions': '\nEscribe ej. (1-2) para sumar la (1ra) carta de las principales de la mesa (flop) y la (2da) de tu mazo.\nLlevate una carta escribiendo (1-2) siguiendo la misma estructura y 1-2+3 para sumar \nla 1ra y 2da carta del flop con la 3ra de tu mazo',
 }
 
 def piece_text(n, piece, text):
@@ -105,6 +106,7 @@ def suggestion():
 def player_play(): #cuando el jugador va a jugar
     play = get_input(definitions['playing'])
     action = False #accion del new_flop
+
     if play == '1':
         flop(True)
         get = get_input('Sumar: ')
@@ -116,7 +118,7 @@ def player_play(): #cuando el jugador va a jugar
             
     if play == '2':
         flop(True)
-        get = get_input('Objeter: ')
+        get = get_input('Obtener: ')
         get = make_card_play(get)
         if not get == ['']:
             action = game.new_flop('get_card', [i for i in get], cartas.rule.inning)
@@ -136,23 +138,29 @@ def player_play(): #cuando el jugador va a jugar
         print('Error cartas no coinciden o las sumaste más de 14')
         time.sleep(2)
         play = 0
+    
+    if action == 'turn_finished': #cuando se acaban todas las cartas
+        cls()
+        print('Ahora comenzara la nueva mano..')
+        time.sleep(1)
+        game.repartir(4, True)
+        time.sleep(2)
+        back_page(0)
 
-    back_page(play) #volver a lo mismo
+    back_page(play) #volver al principio
 
     cartas.rule.shifts() #nuevo turno
-    # print(action)
+    
     print('Listo, ahora es turno del jugador '+str(cartas.rule.inning))
     setTimeOut([[3, 'cls(),flop(False)']])
 
-    # print(game.all_data)
-    # flop(True)
     
 def back_page(play):
     if play not in ['1', '2', '3']:
         flop(True), player_play()
 
 def make_card_play(card):
-    river = card.replace('=', '-').split('-')
+    river = regex.sub(r'[=,+ ]', '-', card).split('-')
     flop = []
     if len(river) >= 3:
         river.pop(-1)

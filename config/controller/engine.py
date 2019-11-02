@@ -32,56 +32,75 @@ class RulesGame():
         player = data['Player-'+str(self.inning)] #obteniendo turno
         flop = data['flop'] #obteniendo barajas en tablero
 
-        if isinstance(cards[0], list): #si se suma mas de un flop y tus cartas
-            for card in cards[0]:
-                self.new_flop = self.new_flop + flop[int(card)-1][0] #agregado los cartas sumadas
-                
-                self.turn.append(flop[int(card)-1])
-            self.turn.append(player[int(cards[1])-1])
-        else: 
-            getted = flop[int(cards[0])-1]
-            self.new_flop = getted[0] #carta del flop
-            self.turn.extend((getted, player[int(cards[1])-1]))
-
-            if isinstance(getted[1], list): #quitando primer digito
-                self.turn = []
-                for card in getted:
-                    if isinstance(card, list):
-                        self.turn.append(int(card))
+        try:    
+            if isinstance(cards[0], list): #si se suma mas de un flop y tus cartas
+                for card in cards[0]:
+                    self.new_flop = self.new_flop + flop[int(card)-1][0] #agregado los cartas sumadas
+                    
+                    self.turn.append(flop[int(card)-1])
                 self.turn.append(player[int(cards[1])-1])
+            else: 
+                getted = flop[int(cards[0])-1]
+                self.new_flop = getted[0] #carta del flop
+                self.turn.extend((getted, player[int(cards[1])-1]))
 
-        self.turn.insert(0, self.new_flop+player[int(cards[1])-1][0])
-        
+                if isinstance(getted[1], list): #quitando primer digito
+                    self.turn = []
+                    for card in getted:
+                        if isinstance(card, list):
+                            self.turn.append(int(card))
+                    self.turn.append(player[int(cards[1])-1])
+
+            self.turn.insert(0, self.new_flop+player[int(cards[1])-1][0])
+        except IndexError:
+            return [15] #enviando error
+
         return self.turn
     
     def rule_get(self, data, cards, player):
         river = []
         flop = data['flop']
-        if isinstance(cards[0], list):
-            None
-                # for card in flop:
-                #     print(card)
-        else:
-            card1 = int(cards[0])
-            card2 = int(cards[1])
-            if flop[card1-1][0] ==  player[card2-1][0]:
-                if isinstance(flop[card1-1][1], list): #si ya habian sumadas
-                    flop[card1-1].pop(0) #eliminamos primer digito inservible
-                    [river.append(i) for i in flop[card1-1]]
-                    river.append(player[card2-1])
+
+        if not isinstance(cards[0], list):
+            try:
+                card1 = int(cards[0])
+                card2 = int(cards[1])
+                if flop[card1-1][0] ==  player[card2-1][0]:
+                    if isinstance(flop[card1-1][1], list): #si ya habian sumadas
+                        flop[card1-1].pop(0) #eliminamos primer digito inservible
+                        [river.append(i) for i in flop[card1-1]]
+                        river.append(player[card2-1])
+                    else:
+                        river.extend((flop[card1-1], player[card2-1])) #agregamos
+                        
+                    flop.pop(card1-1), player.pop(card2-1) #eliminamos cartas
+                    [data['total'][self.inning-1].append(i) for i in river]
                 else:
-                    river.extend((flop[card1-1], player[card2-1])) #agregamos
-                    
-                flop.pop(card1-1), player.pop(card2-1) #eliminamos cartas
-                [data['total'][self.inning-1].append(i) for i in river]
-            else:
-                return False
-
-        return river
-
-
-        
-             
+                    return False
+                self.turn = flop
+            except IndexError:
+                    return False
+        else: #si vas a obtener una carta sumando dos o mas del flop
+            total = 0
+            save = False
+            for i in cards[0]:
+                try:
+                    if flop[int(i)-1][0] == player[int(cards[-1])-1][0]:
+                        save = True
+                    else:
+                        total = total + int(flop[int(i)-1][0])
+                except IndexError:
+                    return False
             
-        
+            if total == player[int(cards[-1])-1][0] or save == True:
+                cards[0].sort(reverse = True)
+                for i in cards[0]:
+                    river.append(flop[int(i)-1])
+                river.append(player[int(cards[-1])-1])
+                [flop.pop(int(i)-1) for i in cards[0]] 
 
+                self.turn = flop     
+            else:
+                river = False
+                
+        return river

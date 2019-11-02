@@ -60,15 +60,18 @@ class Cartas:
             i = 1
             river = rule.rule_sum(self.all_data, cards)
             if not river[0] >= 15:    #si lo que sumas es mayor que 14 
-                if isinstance(cards[0], list): #si se suma una o mas cartas del flop y una tuya
-                    for card in cards[0]:
-                        flop.pop(int(card)-i)
-                        i += 1
-                    flop.insert(int(cards[0][0])-1, river)
-                else: # si se suma una carta tuya y del flop
-                    flop.pop(int(cards[0])-1)
-                    flop.insert(int(cards[0])-1, river)
-                player.pop(int(cards[-1])-1) #quitando carta de mi mazo
+                try:
+                    if isinstance(cards[0], list): #si se suma una o mas cartas del flop y una tuya
+                        for card in cards[0]:
+                            flop.pop(int(card)-i)
+                            i += 1
+                        flop.insert(int(cards[0][0])-1, river)
+                    else: # si se suma una carta tuya y del flop
+                        flop.pop(int(cards[0])-1)
+                        flop.insert(int(cards[0])-1, river)
+                    player.pop(int(cards[-1])-1) #quitando carta de mi mazo
+                except IndexError:
+                    return False
             else:
                 return True #error
             
@@ -81,8 +84,11 @@ class Cartas:
             print('Carta obtenida')
 
         if action == 'leave_card':
-            flop.append(player[int(cards[0])-1])
-            player.pop(int(cards[0])-1)
+            try:
+                flop.append(player[int(cards[0])-1])
+                player.pop(int(cards[0])-1)
+            except IndexError:
+                return True #error
 
         limit = rule.serverData['n_player'] #si se quedan sin cartas
         if rule.inning == limit and len(player) == 0:
@@ -112,30 +118,3 @@ class Cartas:
             return 0
         else:
             return self.check_cards(i) #ejemplo de recursividad  
-        
-
-# baraja = Cartas()
-# baraja.tipo = ['Picas','Corazones','Diamantes','Tréboles']
-# baraja.cartas = [1,2,3,4,5,6,7,8,9,10,11,12,13]
-# baraja.icon = ['♤', '♥', '♦', '♣']
-# baraja.mazo()
-# baraja.barajar()
-
-# baraja.repartir(2, False)
-
-# rule.shifts() #turnos
-
-# baraja.suggest_play('sum', [[1, 2], 1])
-
-# baraja.all_data = {'flop': [[4, 'Diamantes', '♦'], [1, 'Picas', '♤'], [1, 'Diamantes', '♦'], [11, 'Corazones', '♥']], 'total': [[], [], [], []], 'Player-1': [[4, 'Picas', '♤'], [1, 'Corazones', '♥'], [1, 'Corazones', '♤'], [6, 'Tréboles', '♣']], 'Player-2': [[4, 'Picas', '♤'], [3, 'Diamantes', '♦'], [6, 'Tréboles', '♣'], [9, 'Corazones', '♥']], 'Player-3': [[12, 'Picas', '♤'], [11, 'Picas', '♤'], [10, 'Corazones', '♥'], [12, 'Corazones', '♥']], 'Player-4': [[1, 'Corazones', '♥'], [12, 'Diamantes', '♦'], [13, 'Tréboles', '♣'], [1, 'Diamantes', '♦']]}
-
-# baraja.new_flop('sum', [[1, 2], 2], 1)
-# rule.shifts()
-# baraja.new_flop('get_card', [1, 1], 2)
-# 
-# baraja.new_flop('leave_card', [1], 2)
-# baraja.new_flop('sum', [[2, 3], 2], 2)
-# baraja.new_flop('sum', [[2, 3], 2], 2)
-# baraja.new_flop('get_card', [[1, 2], 1], 0)
-
-# print(baraja.all_data)
