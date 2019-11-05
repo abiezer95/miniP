@@ -1,13 +1,13 @@
 class Server:
     __all_players, _id_player = 0, 0
+    limit_players = 0
 
     def online_player(self):
         self.__all_players =  self.__all_players + 1
         self._id_player = 'Player-'+str(self.__all_players) #creando id de jugador
     
     def limit_player(self):
-        return
-        # return False if self.limit_players <= 1 or self.limit_player > 4 else True
+        return False if self.limit_players <= 1 or self.limit_player > 4 else True
 
 class RulesGame():
     inning = 1 #turnos
@@ -53,6 +53,18 @@ class RulesGame():
         river = []
         flop = data['flop']
 
+        if cards == 'success': #quien jugo de ultimo se llama las cartas de la mesa
+            e = 0
+            for card in flop:
+                if isinstance(card[1], list): #si ya habian sumadas
+                    flop[e].pop(0) #eliminamos primer digito inservible
+                    [river.append(i) for i in flop[e]] #flop
+                else:
+                    river.append(card) #flop
+                e += 1
+    
+            return river
+        ################
         if not isinstance(cards[0], list): #si no se suman cartas de la mesa
             try:
                 card1 = int(cards[0]) #flop
@@ -66,7 +78,7 @@ class RulesGame():
                     else:
                         river.extend((flop[card1-1], player[card2-1])) #agregamos
                         
-                    flop.pop(card1-1) #eliminamos cartas
+                    flop.pop(card1-1) #eliminamos digito inservible
                     [data['total'][self.inning-1].append(i) for i in river]
                 else:
                     return False

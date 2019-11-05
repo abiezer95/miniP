@@ -88,9 +88,10 @@ class Cartas:
             river = rule.rule_get(self.all_data, cards, player)
             if river == False: #error
                 return True
-
+            
             [self.all_data['total'][shifts-1].append(i) for i in river] #agregando cartas a total
-            player.pop(int(cards[-1])-1)
+            if cards != 'success': #si no se acaban todas las cartas
+                player.pop(int(cards[-1])-1)
             print('Carta obtenida')
 
         if action == 'leave_card':

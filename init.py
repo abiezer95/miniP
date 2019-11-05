@@ -22,7 +22,13 @@ definitions = {
 def load_game():
     piece_text(10, '/', definitions['welcome'].upper())
     n_player = get_input(definitions['n_players'])
-    game._limit = int(n_player)
+
+    if n_player != '':
+        game._limit = int(n_player)
+    else:
+        cls()
+        load_game()
+
     if int(n_player) <= 1 or int(n_player) > 4:
         print(definitions['n_player_error'])
         time.sleep(3), cls(), load_game()
@@ -31,6 +37,7 @@ def load_game():
         setTimeOut([[1, 'game.mazo()'], [1, 'game.barajar()'], [1, 'game.repartir(False)']])
         time.sleep(2), cls()
         flop(0)
+    
 
 def flop(suggested): #jugabilidad y textos
     cls()
@@ -104,9 +111,11 @@ def player_play(): #cuando el jugador va a jugar
         time.sleep(2)
         play = 0
 
+    
     if len(game._Cartas__cards) == 0 and action == 'turn_finished': # si ya acabo todo el juego
-
-        all_finished()
+        game.new_flop('get_card', 'Success', cartas.rule.inning) #obtiendo todo del flop de quien se llevo la ultima
+        cls()
+        all_finished() #contando todo para saber quien gano
 
     back_page(play) #volver al principio
 
@@ -121,7 +130,6 @@ def player_play(): #cuando el jugador va a jugar
         time.sleep(2)
         back_page(0)
     
-    print(game.all_data)
     print('Listo, ahora es turno del jugador '+str(cartas.rule.inning))
     setTimeOut([[3, 'cls(),flop(False)']])
 
@@ -134,8 +142,12 @@ def all_finished(): #cuando acabas todo
     for winner in _max:
         print('Player-'+str(i)+': '+str(winner))
         i += 1
+
+    piece_text(15, '❤ ', '')
     press = input('\nEmpezar otra partida? (Y/N): ')
+
     if press.upper() == 'Y':
+        cls()
         load_game()
 
 def back_page(play):
