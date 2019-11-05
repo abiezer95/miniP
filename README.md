@@ -1,7 +1,7 @@
 # miniP
 
 <h1>Como jugar</h1>
-
+<h2>Ejecuta el archivo init.py para que todo inicie</h2>
 Elige entre sumar, obtener y dejar carta:
 
 la estructura es la siguiente
