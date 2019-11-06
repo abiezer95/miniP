@@ -12,6 +12,7 @@ class Server:
 class RulesGame():
     inning = 1 #turnos
     new_flop = 0
+    player_finish = 0
     turn = []
     recursivity = []
 
@@ -55,13 +56,14 @@ class RulesGame():
 
         if cards == 'success': #quien jugo de ultimo se llama las cartas de la mesa
             e = 0
-            for card in flop:
-                if isinstance(card[1], list): #si ya habian sumadas
-                    flop[e].pop(0) #eliminamos primer digito inservible
-                    [river.append(i) for i in flop[e]] #flop
-                else:
-                    river.append(card) #flop
-                e += 1
+            if len(flop) != 0:
+                for card in flop:
+                    if isinstance(card[1], list): #si ya habian sumadas
+                        flop[e].pop(0) #eliminamos primer digito inservible
+                        [river.append(i) for i in flop[e]] #flop
+                    else:
+                        river.append(card) #flop
+                    e += 1
     
             return river
         ################
@@ -71,6 +73,7 @@ class RulesGame():
                 card2 = int(cards[1]) #player card
                 
                 if flop[card1-1][0] ==  player[card2-1][0]:
+                    self.player_finish = self.inning
                     if isinstance(flop[card1-1][1], list): #si ya habian sumadas
                         flop[card1-1].pop(0) #eliminamos primer digito inservible
                         [river.append(i) for i in flop[card1-1]] #flop
@@ -98,6 +101,7 @@ class RulesGame():
                     return False
             
             if total == player[int(cards[-1])-1][0] or save == True:
+                self.player_finish = self.inning
                 cards[0].sort(reverse = True)
 
                 for i in cards[0]:

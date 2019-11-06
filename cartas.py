@@ -42,22 +42,23 @@ class Cartas:
         i = 0
         e = 1
         flop = limit*4
-        for card in self.__cards: #repartiendo
+        for card in self.__cards: #repartiendo 
             if i >= flop: #ultimas cartas repartidas en mesa
                 if step == False:
                     self.all_data['flop'].append(card)
-                if i >= flop+3:
                     self.__cards.pop(i)
+                if i >= flop+3:
                     break
-            else: #repartiendo a jugadores
+            else:
                 self.all_data['Player-'+str(e)].append(card)
-                e = 1 if e == limit else e + 1 #comienza a repartir desde el primer jugador
-                if i == flop and step == True:
-                    break
-            self.__cards.pop(i)
-        
+                e = 1 if e == limit else e + 1 #comienza a repartir desde el primer jugador.
+                if len(self.__cards) != 4:
+                    self.__cards.pop(i)
             i += 1
-        # print(len(self.__cards))
+
+        if len(self.__cards) == 4:
+            self.__cards = []
+
         print('Cartas repartidas ...')
         
     #agregando nuevo flop, updating #polimorfismo de dos funciones :)
@@ -88,10 +89,13 @@ class Cartas:
             river = rule.rule_get(self.all_data, cards, player)
             if river == False: #error
                 return True
-            
-            [self.all_data['total'][shifts-1].append(i) for i in river] #agregando cartas a total
+
             if cards != 'success': #si no se acaban todas las cartas
+                [self.all_data['total'][shifts-1].append(i) for i in river] #agregando cartas a total
                 player.pop(int(cards[-1])-1)
+            else:
+                [self.all_data['total'][rule.player_finish-1].append(i) for i in river] #total de flop al finalizar todo
+
             print('Carta obtenida')
 
         if action == 'leave_card':

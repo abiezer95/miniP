@@ -24,6 +24,7 @@ def load_game():
     n_player = get_input(definitions['n_players'])
 
     if n_player != '':
+        cartas.rule.inning = 1
         game._limit = int(n_player)
     else:
         cls()
@@ -113,8 +114,9 @@ def player_play(): #cuando el jugador va a jugar
 
     
     if len(game._Cartas__cards) == 0 and action == 'turn_finished': # si ya acabo todo el juego
-        game.new_flop('get_card', 'Success', cartas.rule.inning) #obtiendo todo del flop de quien se llevo la ultima
+        game.new_flop('get_card', 'success', cartas.rule.inning) #obtiendo todo del flop de quien se llevo la ultima
         cls()
+        piece_text(7, '❤ ', 'CONGRATULATIONS')
         all_finished() #contando todo para saber quien gano
 
     back_page(play) #volver al principio
@@ -134,21 +136,23 @@ def player_play(): #cuando el jugador va a jugar
     setTimeOut([[3, 'cls(),flop(False)']])
 
 def all_finished(): #cuando acabas todo
+    time.sleep(2)
     _max = cartas.rule.rule_winner(game.all_data, game._limit, 0)
     winner = [i for i, j in enumerate(_max) if j == max(_max)][0]+1
-    piece_text(7, '❤ ', 'The winner is the '+'Player-'+str(winner))
+    piece_text(7, '❤ ', 'The winner is the '+'PLAYER-'+str(winner))
     print('Estas son las estadisticas: \n')
     i = 1
     for winner in _max:
         print('Player-'+str(i)+': '+str(winner))
         i += 1
 
-    piece_text(15, '❤ ', '')
-    press = input('\nEmpezar otra partida? (Y/N): ')
+    print('\n')
+    piece_text(10, '❤ ', 'Winner')
+    press = input('\nContinuar Press ENTER ')
 
-    if press.upper() == 'Y':
-        cls()
-        load_game()
+    # if press.upper() == 'Y':
+    #     cls()
+    #     load_game()
 
 def back_page(play):
     if play not in ['1', '2', '3']:
