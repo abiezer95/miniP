@@ -147,4 +147,4 @@ class RulesGame():
         self.recursivity.append(total)
 
         if i < limit-1:
-            self.__get_result_winner(data, limit, i+1) #recursivity
+            self.__get_result_winner(data, limit, i+1) #recursivity 
