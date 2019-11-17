@@ -1,5 +1,0 @@
-DEBUG = True
-# HOST="0.0.0.0"
-# PORT=80
-# SQLALCHEMY_DB=""
-SECRET_KEY = "secret"
