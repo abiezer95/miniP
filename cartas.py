@@ -28,6 +28,7 @@ class Cartas:
         print('Mazo de cartas listo...')
 
     def barajar(self):
+        self.__cards = [[1, 'Picas', '♤'], [1, 'Corazones', '♥'], [1, 'Diamantes', '♦'], [1, 'Tréboles', '♣'], [2, 'Picas', '♤'], [2, 'Corazones', '♥'], [2, 'Diamantes', '♦'], [2, 'Diamantes', '♦']]
         random.shuffle(self.__cards) #barajando de forma aleatoria
         print('Cartas barajadas ...')
 
@@ -42,7 +43,7 @@ class Cartas:
         i = 0
         e = 1
         flop = limit*4
-        for card in self.__cards: #repartiendo 
+        for card in self.__cards: #repartiendo
             if i >= flop: #ultimas cartas repartidas en mesa
                 if step == False:
                     self.all_data['flop'].append(card)
@@ -52,6 +53,7 @@ class Cartas:
             else:
                 self.all_data['Player-'+str(e)].append(card)
                 e = 1 if e == limit else e + 1 #comienza a repartir desde el primer jugador.
+                print(card)
                 if len(self.__cards) != 4:
                     self.__cards.pop(i)
             i += 1
@@ -72,6 +74,7 @@ class Cartas:
             if not river[0] >= 15:    #si lo que sumas es mayor que 14 
                 try:
                     if isinstance(cards[0], list): #si se suma una o mas cartas del flop y una tuya
+                        print('asd')
                         for card in cards[0]:
                             flop.pop(int(card)-i)
                             i += 1
