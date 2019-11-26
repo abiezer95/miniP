@@ -28,7 +28,6 @@ class Cartas:
         print('Mazo de cartas listo...')
 
     def barajar(self):
-        self.__cards = [[1, 'Picas', '♤'], [1, 'Corazones', '♥'], [1, 'Diamantes', '♦'], [1, 'Tréboles', '♣'], [2, 'Picas', '♤'], [2, 'Corazones', '♥'], [2, 'Diamantes', '♦'], [2, 'Diamantes', '♦']]
         random.shuffle(self.__cards) #barajando de forma aleatoria
         print('Cartas barajadas ...')
 
@@ -42,25 +41,22 @@ class Cartas:
                 ############
         i = 0
         e = 1
+        delete = []
         flop = limit*4
         for card in self.__cards: #repartiendo
             if i >= flop: #ultimas cartas repartidas en mesa
                 if step == False:
                     self.all_data['flop'].append(card)
-                    self.__cards.pop(i)
+                    self.__cards.pop(0)
                 if i >= flop+3:
                     break
             else:
                 self.all_data['Player-'+str(e)].append(card)
                 e = 1 if e == limit else e + 1 #comienza a repartir desde el primer jugador.
-                print(card)
-                if len(self.__cards) != 4:
-                    self.__cards.pop(i)
+                delete.append(i) #para prevenir el error de cartas mal repartidas
             i += 1
-
-        if len(self.__cards) == 4:
-            self.__cards = []
-
+        [self.__cards.pop(0) for i in delete]       
+        
         print('Cartas repartidas ...')
         
     #agregando nuevo flop, updating #polimorfismo de dos funciones :)

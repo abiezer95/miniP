@@ -21,11 +21,11 @@ definitions = {
 
 def load_game():
     cartas.rule.inning = 1
-    game._limit = 2
+    game._limit = 3
     setTimeOut([[0, 'game.mazo()'], [0, 'game.barajar()'], [0, 'game.repartir(False)']])
     # game.all_data ={'flop': [[10, 'Corazones', '♥'], [9, 'Picas', '♤'], [5, 'Picas', '♤']], 'total': [[[11, 'Picas', '♤'], [11, 'Tréboles', '♣'], [11, 'Corazones', '♥'], [5, 'Tréboles', '♣'], [5, 'Corazones', '♥'], [5, 'Tréboles', '♣'], [5, 'Corazones', '♥'], [13, 'Diamantes', '♦'], [13, 'Corazones', '♥'], [13, 'Diamantes', '♦'], [13, 'Corazones', '♥'], [6, 'Picas', '♤'], [6, 'Diamantes', '♦'], [6, 'Picas', '♤'], [6, 'Diamantes', '♦'], [1, 'Corazones', '♥'], [9, 'Tréboles', '♣'], [10, 'Picas', '♤'], [8, 'Picas', '♤'], [8, 'Diamantes', '♦'], [8, 'Picas', '♤']]}
-#     all_finished() 
-    # flop(0)
+    # all_finished() 
+    flop(0)
     
     # piece_text(10, '/', definitions['welcome'].upper())
     # n_player = get_input(definitions['n_players'])
@@ -74,23 +74,18 @@ def flop(suggested): #jugabilidad y textos
     
     print('\n')
     
-    piece_text(5, ' ', river+'\n\n') #este es el flop
+    piece_text(5, ' ', river+'\n\n') #this is the flop
     
-    print(definitions['player'].replace('$n', str(inning))+player_card) #cartas del jugador
-    
-    suggest = get_input('\nVer sugerencias (y/n): ').upper() if suggested == False else True
-
-    if suggest == 'Y':
-        suggestion()
+    print(definitions['player'].replace('$n', str(inning))+player_card) #cards of player
         
     if suggested == False:
-        flop(True) #sobreescribiendo el flop
-        player_play() #jugando
+        flop(True) #overwriting the flop
+        player_play() #playing
     
 
-def player_play(): #cuando el jugador va a jugar
+def player_play(): #when the player is playing
     play = get_input(definitions['playing'])
-    action = False #accion del new_flop
+    action = False #action of new_flop
 
     if play == '1':
         flop(True)
@@ -135,35 +130,36 @@ def player_play(): #cuando el jugador va a jugar
             time.sleep(2)
             play = 0
     
-    if action == True: #error de cartas
+    if action == True: #error of cards
         print('Error cartas no coinciden o las sumaste más de 14')
         time.sleep(2)
         play = 0
         flop(0)
 
-    if len(game._Cartas__cards) == 0 and action == 'turn_finished': # si ya acabo todo el juego
-        game.new_flop('get_card', 'success', cartas.rule.inning) #obtiendo todo del flop de quien se llevo la ultima
+    if len(game._Cartas__cards) == 0 and action == 'turn_finished': # if the gane finished
+        game.new_flop('get_card', 'success', cartas.rule.inning) #getting all from the desk if you are the last in get a card
         cls()
         piece_text(7, '❤ ', 'CONGRATULATIONS')
-        all_finished() #contando todo para saber quien gano
+        all_finished() #counting for get the winner
+        return #
     else:
-        back_page(play) #volver al principio
+        back_page(play) #back to the start
 
-        cartas.rule.shifts(game._limit) #nuevo turno
-        # print(game.all_data)
-        if action == 'turn_finished': #para repartir mas cartas
+        cartas.rule.shifts(game._limit) #new turn
+        
+        if action == 'turn_finished': #deal cards
             cls()
             print('Ahora comenzara la nueva mano..')
             time.sleep(1)
             game.repartir(True)
-            print('Quedan '+str(len(game._Cartas__cards))+' por repartir') #accediendo a elemento privado
+            print('Quedan '+str(len(game._Cartas__cards))+' por repartir') #access to private element
             time.sleep(2)
             back_page(0)
         
         print('Listo, ahora es turno del jugador '+str(cartas.rule.inning))
         setTimeOut([[3, 'cls(),flop(False)']])
 
-def all_finished(): #cuando acabas todo
+def all_finished(): #when all finish
     time.sleep(2)
     cls()
     _max = cartas.rule.rule_winner(game.all_data, game._limit, 0)
@@ -177,11 +173,8 @@ def all_finished(): #cuando acabas todo
 
     print('\n')
     piece_text(10, '❤ ', 'Winner')
-    input('\nContinuar Press ENTER ')
-
-    # if press.upper() == 'Y':
-    #     cls()
-    #     load_game()
+    input('\nContinuar Press ENTER')
+    exit()
 
 def back_page(play):
     if play not in ['1', '2', '3']:
@@ -197,7 +190,7 @@ def make_card_play(card):
     else:
         card = river
 
-    return [''] if True in [True if i == '' else False for i in river] else card #error y valor
+    return [''] if True in [True if i == '' else False for i in river] else card #error y value
 
 
 def suggestion():
@@ -226,7 +219,7 @@ def get_input(text):
     return var
 
 def cls():
-    # os.system ("clear")
+    # os.system ("clear") #this is for linux
     os.system ("cls") 
 
 load_game() 
