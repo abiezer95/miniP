@@ -4,49 +4,49 @@ class Server:
 
     def online_player(self):
         self.__all_players =  self.__all_players + 1
-        self._id_player = 'Player-'+str(self.__all_players) #creando id de jugador
+        self._id_player = 'Player-'+str(self.__all_players) #creating id of player
     
     def limit_player(self):
         return False if self.limit_players <= 1 or self.limit_player > 4 else True
 
 class RulesGame():
-    inning = 1 #turnos
+    inning = 1 #innings
     new_flop = 0
     player_finish = 0
     turn = []
     recursivity = []
 
-    def shifts(self, limit): #sistema de turnos
+    def shifts(self, limit): #inning system
         self.inning = 1 if self.inning == limit else self.inning + 1
         return self.inning
     
     def rule_sum(self, data, cards): #working
         self.turn = []
-        player = data['Player-'+str(self.inning)] #obteniendo turno
-        flop = data['flop'] #obteniendo barajas en tablero
+        player = data['Player-'+str(self.inning)] #getting turn or inning
+        flop = data['flop'] #getting cards of desk flop
 
         try:    
-            if isinstance(cards[0], list): #si se suma mas de un flop y tus cartas
+            if isinstance(cards[0], list): #if you added one of your cards up between a group in desk flop
                 for card in cards[0]:
-                    self.new_flop = self.new_flop + flop[int(card)-1][0] #agregado los cartas sumadas
+                    self.new_flop = self.new_flop + flop[int(card)-1][0] #adding cards ading up
                     self.turn.append(flop[int(card)-1])
                     
                 self.turn.append(player[int(cards[1])-1])
             else: 
                 getted = flop[int(cards[0])-1]
-                self.new_flop = getted[0] #carta del flop
+                self.new_flop = getted[0] #card of desk flop
                 self.turn.extend((getted, player[int(cards[1])-1]))
 
-                if isinstance(getted[1], list): #quitando primer digito
+                if isinstance(getted[1], list): #removing first digit
                     self.turn = []
                     for card in getted:
-                        if isinstance(card, list): #si hay dos o mas cartas en la mesa juntas
+                        if isinstance(card, list): #if there is two or more cards join in the desk flop
                             self.turn.append(card)
                     self.turn.append(player[int(cards[1])-1])
 
             self.turn.insert(0, self.new_flop+player[int(cards[1])-1][0])
         except IndexError:
-            return [15] #enviando error
+            return [15] #sending error
 
         return self.turn
     
@@ -54,12 +54,12 @@ class RulesGame():
         river = []
         flop = data['flop']
 
-        if cards == 'success': #quien jugo de ultimo se llama las cartas de la mesa
+        if cards == 'success': #who plays the last time
             e = 0
             if len(flop) != 0:
                 for card in flop:
-                    if isinstance(card[1], list): #si ya habian sumadas
-                        flop[e].pop(0) #eliminamos primer digito inservible
+                    if isinstance(card[1], list): #if there were already cards added up
+                        flop[e].pop(0) #deleting first digit useless
                         [river.append(i) for i in flop[e]] #flop
                     else:
                         river.append(card) #flop
@@ -67,28 +67,28 @@ class RulesGame():
     
             return river
         ################
-        if not isinstance(cards[0], list): #si no se suman cartas de la mesa
+        if not isinstance(cards[0], list): #if not adding up cards of desk flop
             try:
                 card1 = int(cards[0]) #flop
                 card2 = int(cards[1]) #player card
                 
                 if flop[card1-1][0] ==  player[card2-1][0]:
                     self.player_finish = self.inning
-                    if isinstance(flop[card1-1][1], list): #si ya habian sumadas
-                        flop[card1-1].pop(0) #eliminamos primer digito inservible
+                    if isinstance(flop[card1-1][1], list): #if there is cards added up
+                        flop[card1-1].pop(0) #deleting first digit useless
                         [river.append(i) for i in flop[card1-1]] #flop
                         river.append(player[card2-1]) #player
                     else:
-                        river.extend((flop[card1-1], player[card2-1])) #agregamos
+                        river.extend((flop[card1-1], player[card2-1])) #adding
                         
-                    flop.pop(card1-1) #eliminamos digito inservible
+                    flop.pop(card1-1) #deliting degits useless
                     [data['total'][self.inning-1].append(i) for i in river]
                 else:
                     return False
                 # self.turn = flop
             except IndexError:
                     return False
-        else: #si vas a obtener una carta sumando dos o mas de la mesa
+        else: #if you will get a card adding up two or more of in desk flop
             total = 0
             save = False
             for i in cards[0]:
@@ -128,7 +128,7 @@ class RulesGame():
             players.append(winner['max'])
         
         winner = 0
-        players[i-1] = players[i-1]+3 #mayor numero de cartas
+        players[i-1] = players[i-1]+3 #greater number of cards
 
         return players
     
@@ -139,9 +139,9 @@ class RulesGame():
         for cards in data['total'][i]:
             if cards[0] == 2 and cards[1].lower() == 'picas' or cards[0] == 1: #2picas #ases 
                 total['max'] += 1
-            if cards[0] == 10 and cards[1].lower() == 'diamantes': #10 diamante
+            if cards[0] == 10 and cards[1].lower() == 'diamantes': #10 diamond
                 total['max'] += 2  
-            if cards[1].lower() in black: #Quien tenga el total gana 2 puntos
+            if cards[1].lower() in black: #who has the total wins 2 points
                 total['maxCards'] += 1
         
         self.recursivity.append(total)
