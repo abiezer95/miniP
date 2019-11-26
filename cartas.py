@@ -70,7 +70,6 @@ class Cartas:
             if not river[0] >= 15:    #si lo que sumas es mayor que 14 
                 try:
                     if isinstance(cards[0], list): #si se suma una o mas cartas del flop y una tuya
-                        print('asd')
                         for card in cards[0]:
                             flop.pop(int(card)-i)
                             i += 1

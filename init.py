@@ -15,41 +15,34 @@ definitions = {
     'inning': 'Es el turno del jugador $n',
     'player': 'Jugador $n estas son sus cartas: ',
     'choose': 'Que vas a elegir: ',
-    'playing': 'Que jugaras \nSumar(1), Obtener(2), Dejar Carta (3): ',
+    'playing': 'Que jugaras \nSumar(1), Obtener(2), Dejar Carta (3), Sugerencias (4): ',
     'suggestions': '\nPara (obtener, sumar o dejar carta escribir el numero que se indica)\nEscribe ej. (1+2) para sumar la (1ra) carta de la mesa (flop) y la (2da) de tu mazo.\nLlevate una carta escribiendo (1=2) siguiendo la misma estructura y 1+2=3 para sumar \nla 3ra carta de tu mazo con 2 sumadas de la mesa. También puedes dejar una carta escribiendo \nla posición de esta ej. 3',
 }
 
 def load_game():
-    cartas.rule.inning = 1
-    game._limit = 3
-    setTimeOut([[0, 'game.mazo()'], [0, 'game.barajar()'], [0, 'game.repartir(False)']])
-    # game.all_data ={'flop': [[10, 'Corazones', '♥'], [9, 'Picas', '♤'], [5, 'Picas', '♤']], 'total': [[[11, 'Picas', '♤'], [11, 'Tréboles', '♣'], [11, 'Corazones', '♥'], [5, 'Tréboles', '♣'], [5, 'Corazones', '♥'], [5, 'Tréboles', '♣'], [5, 'Corazones', '♥'], [13, 'Diamantes', '♦'], [13, 'Corazones', '♥'], [13, 'Diamantes', '♦'], [13, 'Corazones', '♥'], [6, 'Picas', '♤'], [6, 'Diamantes', '♦'], [6, 'Picas', '♤'], [6, 'Diamantes', '♦'], [1, 'Corazones', '♥'], [9, 'Tréboles', '♣'], [10, 'Picas', '♤'], [8, 'Picas', '♤'], [8, 'Diamantes', '♦'], [8, 'Picas', '♤']]}
-    # all_finished() 
-    flop(0)
-    
-    # piece_text(10, '/', definitions['welcome'].upper())
-    # n_player = get_input(definitions['n_players'])
 
-    # try:
-    #    n_player = int(n_player)
-    # except:
-    #     n_player = ''
+    n_player = get_input(definitions['n_players'])
 
-    # if n_player != '':
-    #     cartas.rule.inning = 1
-    #     game._limit = int(n_player)
-    # else:
-    #     cls()
-    #     load_game()
+    try:
+       n_player = int(n_player)
+    except:
+        n_player = ''
 
-    # if int(n_player) <= 1 or int(n_player) > 4:
-    #     print(definitions['n_player_error'])
-    #     time.sleep(3), cls(), load_game()
-    # else:
-    #     time.sleep(2), cls()
-    #     setTimeOut([[1, 'game.mazo()'], [1, 'game.barajar()'], [1, 'game.repartir(False)']])
-    #     time.sleep(2), cls()
-    #     flop(0)
+    if n_player != '':
+        cartas.rule.inning = 1
+        game._limit = int(n_player)
+    else:
+        cls()
+        load_game()
+
+    if int(n_player) <= 1 or int(n_player) > 4:
+        print(definitions['n_player_error'])
+        time.sleep(3), cls(), load_game()
+    else:
+        time.sleep(2), cls()
+        setTimeOut([[1, 'game.mazo()'], [1, 'game.barajar()'], [1, 'game.repartir(False)']])
+        time.sleep(2), cls()
+        flop(0)
     
 
 def flop(suggested): #jugabilidad y textos
@@ -59,18 +52,18 @@ def flop(suggested): #jugabilidad y textos
     icons = ""
     inning = 1 if cartas.rule.inning == 0 else cartas.rule.inning
 
-    for cards in game.all_data['flop']: #cartas de la mesa
+    for cards in game.all_data['flop']: #cards of desk
         if isinstance(cards[1], list) or isinstance(cards[2], list):
-            icons = [i[2] if isinstance(i, list) else '' for i in cards] #si es array en flop
+            icons = [i[2] if isinstance(i, list) else '' for i in cards] #if there are an array in flop
             river = river +"/"+ str(cards[0])+"-"+str(''.join(icons))+"/ "
         else:
             river = river +"/"+ str(cards[0])+"-"+str(cards[2])+"/ " 
     
-    for cards in game.all_data['Player-'+str(inning)]: #cartas del jugador
+    for cards in game.all_data['Player-'+str(inning)]: #the player cards
         player_card = player_card +"/"+ str(cards[0])+"-"+cards[2].upper()+"/  "
     
     
-    piece_text(5, '⚄ ', definitions['inning'].replace('$n', 'Player-'+str(inning))) #titulo y turno del jugador
+    piece_text(5, '⚄ ', definitions['inning'].replace('$n', 'Player-'+str(inning))) #title and turn of player #titulo y turno del jugador
     
     print('\n')
     
@@ -85,10 +78,15 @@ def flop(suggested): #jugabilidad y textos
 
 def player_play(): #when the player is playing
     play = get_input(definitions['playing'])
+
+    if play == '4':
+        suggestion()
+
     action = False #action of new_flop
 
     if play == '1':
         flop(True)
+        print('Para volver preciona ENTER')
         get = get_input('Sumar: ')
         try:
             get = make_card_play(get)
@@ -104,6 +102,7 @@ def player_play(): #when the player is playing
          
     if play == '2':
         flop(True)
+        print('Para volver preciona ENTER')
         get = get_input('Obtener: ')
         try:
             get = make_card_play(get)
@@ -112,12 +111,14 @@ def player_play(): #when the player is playing
             else:
                 play = 0
         except:
+            print('Para volver preciona ENTER')
             print('Error: no puedes usar letras')
             time.sleep(2)
             play = 0
     
     if play == '3':
         flop(True)
+        print('Para volver preciona ENTER')
         get = get_input('Dejar carta: ')
         try:
             get = make_card_play(get)
@@ -203,6 +204,7 @@ def suggestion():
 
 def piece_text(n, piece, text):
     slash = ''
+    slash = ''
     i = 0
     while i <= n:
         slash = slash+piece
@@ -222,4 +224,5 @@ def cls():
     # os.system ("clear") #this is for linux
     os.system ("cls") 
 
+piece_text(10, '/', definitions['welcome'].upper())
 load_game() 
